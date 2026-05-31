@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"gobase"
+	"gobase/store"
 )
 
 const Version byte = 1
@@ -48,7 +48,7 @@ type Response struct {
 	Value     []byte
 	Existed   bool
 	Len       int64
-	Stats     gobase.Stats
+	Stats     store.Stats
 	NodeIndex uint16
 	ErrMsg    string
 }
@@ -285,7 +285,7 @@ func readString(r io.Reader) (string, error) {
 	return string(buf), nil
 }
 
-func writeStats(w io.Writer, s gobase.Stats) error {
+func writeStats(w io.Writer, s store.Stats) error {
 	fields := []int64{s.Hits, s.Misses, s.Sets, s.Deletes, s.Expired}
 	for _, f := range fields {
 		if err := binary.Write(w, binary.BigEndian, f); err != nil {
@@ -295,12 +295,12 @@ func writeStats(w io.Writer, s gobase.Stats) error {
 	return nil
 }
 
-func readStats(r io.Reader) (gobase.Stats, error) {
-	var s gobase.Stats
+func readStats(r io.Reader) (store.Stats, error) {
+	var s store.Stats
 	fields := []*int64{&s.Hits, &s.Misses, &s.Sets, &s.Deletes, &s.Expired}
 	for _, f := range fields {
 		if err := binary.Read(r, binary.BigEndian, f); err != nil {
-			return gobase.Stats{}, err
+			return store.Stats{}, err
 		}
 	}
 	return s, nil

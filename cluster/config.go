@@ -4,7 +4,7 @@ package cluster
 import (
 	"fmt"
 
-	"gobase"
+	"gobase/store"
 )
 
 // Config holds a fixed list of node addresses. Len(Nodes) must be a power of two.
@@ -34,7 +34,7 @@ func (c Config) NodeForKey(key string) (index int, addr string) {
 	return idx, c.Nodes[idx]
 }
 
-// KeyHash re-exports gobase.KeyHash for routing consistency.
+// KeyHash re-exports store.KeyHash for routing consistency.
 func KeyHash(key string) uint64 {
-	return gobase.KeyHash(key)
+	return store.KeyHash(key)
 }

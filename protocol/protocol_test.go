@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"gobase"
+	"gobase/store"
 	"gobase/protocol"
 )
 
@@ -60,7 +60,7 @@ func TestRoundTripStats(t *testing.T) {
 	var buf bytes.Buffer
 	resp := protocol.Response{
 		Status: protocol.StatusOK,
-		Stats:  gobase.Stats{Hits: 1, Misses: 2, Sets: 3, Deletes: 4, Expired: 5},
+		Stats:  store.Stats{Hits: 1, Misses: 2, Sets: 3, Deletes: 4, Expired: 5},
 	}
 	if err := protocol.WriteResponse(&buf, protocol.OpStats, resp); err != nil {
 		t.Fatal(err)

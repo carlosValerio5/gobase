@@ -1,4 +1,4 @@
-package gobase_test
+package integration_test
 
 import (
 	"fmt"
@@ -6,15 +6,15 @@ import (
 	"sync"
 	"testing"
 
-	"gobase"
 	"gobase/client"
 	"gobase/cluster"
 	"gobase/server"
+	"gobase/store"
 )
 
 type testCluster struct {
 	addrs  []string
-	stores []*gobase.Store
+	stores []*store.Store
 	ln     []net.Listener
 }
 
@@ -26,7 +26,7 @@ func startCluster(t *testing.T, n int) *testCluster {
 
 	tc := &testCluster{
 		addrs:  make([]string, n),
-		stores: make([]*gobase.Store, n),
+		stores: make([]*store.Store, n),
 		ln:     make([]net.Listener, n),
 	}
 
@@ -37,10 +37,10 @@ func startCluster(t *testing.T, n int) *testCluster {
 		}
 		tc.ln[i] = ln
 		tc.addrs[i] = ln.Addr().String()
-		tc.stores[i] = gobase.New(gobase.WithReaperInterval(0))
+		tc.stores[i] = store.New(store.WithReaperInterval(0))
 
-		go func(l net.Listener, store gobase.Storage) {
-			_ = server.ServeStorageOn(l, store)
+		go func(l net.Listener, s store.Storage) {
+			_ = server.ServeStorageOn(l, s)
 		}(ln, tc.stores[i])
 	}
 	return tc
@@ -192,5 +192,5 @@ func TestClusterConcurrent(t *testing.T) {
 }
 
 func TestClientImplementsStorage(t *testing.T) {
-	var _ gobase.Storage = (*client.Client)(nil)
+	var _ store.Storage = (*client.Client)(nil)
 }

@@ -1,14 +1,14 @@
-package gobase_test
+package store_test
 
 import (
 	"fmt"
 	"testing"
 
-	"gobase"
+	"gobase/store"
 )
 
 func BenchmarkSet(b *testing.B) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 	val := []byte("value")
 
@@ -23,7 +23,7 @@ func BenchmarkSet(b *testing.B) {
 }
 
 func BenchmarkGet(b *testing.B) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 	for i := 0; i < 10000; i++ {
 		s.Set(fmt.Sprintf("key-%d", i), []byte("value"))

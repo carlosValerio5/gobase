@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"gobase"
+	"gobase/store"
 	"gobase/protocol"
 )
 
@@ -20,12 +20,12 @@ type ServerConfig struct {
 }
 
 // Serve runs a TCP server backed by store until the listener fails.
-func Serve(cfg ServerConfig, store *gobase.Store) error {
+func Serve(cfg ServerConfig, store *store.Store) error {
 	return ServeStorage(cfg, store)
 }
 
 // ServeStorage runs a network server backed by any Storage implementation.
-func ServeStorage(cfg ServerConfig, store gobase.Storage) error {
+func ServeStorage(cfg ServerConfig, store store.Storage) error {
 	network := cfg.Network
 	if network == "" {
 		network = "tcp"
@@ -38,7 +38,7 @@ func ServeStorage(cfg ServerConfig, store gobase.Storage) error {
 }
 
 // ServeStorageOn serves store on an existing listener until Accept fails.
-func ServeStorageOn(ln net.Listener, store gobase.Storage) error {
+func ServeStorageOn(ln net.Listener, store store.Storage) error {
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -48,7 +48,7 @@ func ServeStorageOn(ln net.Listener, store gobase.Storage) error {
 	}
 }
 
-func handleConn(conn net.Conn, store gobase.Storage) {
+func handleConn(conn net.Conn, store store.Storage) {
 	defer conn.Close()
 	for {
 		req, err := protocol.ReadRequest(conn)
@@ -62,7 +62,7 @@ func handleConn(conn net.Conn, store gobase.Storage) {
 	}
 }
 
-func dispatch(store gobase.Storage, req protocol.Request) protocol.Response {
+func dispatch(store store.Storage, req protocol.Request) protocol.Response {
 	switch req.Op {
 	case protocol.OpGet:
 		val, ok := store.Get(req.Key)

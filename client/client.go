@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"gobase"
+	"gobase/store"
 	"gobase/cluster"
 	"gobase/protocol"
 )
@@ -125,9 +125,9 @@ func (c *Client) Len() int {
 }
 
 // Stats aggregates counters from all nodes.
-func (c *Client) Stats() gobase.Stats {
+func (c *Client) Stats() store.Stats {
 	type result struct {
-		stats gobase.Stats
+		stats store.Stats
 		err   error
 	}
 	ch := make(chan result, len(c.pools))
@@ -151,10 +151,10 @@ func (c *Client) Stats() gobase.Stats {
 	wg.Wait()
 	close(ch)
 
-	var total gobase.Stats
+	var total store.Stats
 	for r := range ch {
 		if r.err != nil {
-			return gobase.Stats{}
+			return store.Stats{}
 		}
 		total = total.Add(r.stats)
 	}
@@ -249,4 +249,4 @@ func dial(addr string) (net.Conn, error) {
 	return net.Dial(network, dialAddr)
 }
 
-var _ gobase.Storage = (*Client)(nil)
+var _ store.Storage = (*Client)(nil)
