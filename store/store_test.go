@@ -1,15 +1,15 @@
-package gobase_test
+package store_test
 
 import (
 	"sync"
 	"testing"
 	"time"
 
-	"gobase"
+	"gobase/store"
 )
 
 func TestGetSetDelete(t *testing.T) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 
 	s.Set("foo", []byte("bar"))
@@ -30,7 +30,7 @@ func TestGetSetDelete(t *testing.T) {
 }
 
 func TestTTLExpiry(t *testing.T) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 
 	s.SetWithTTL("temp", []byte("x"), 20*time.Millisecond)
@@ -50,7 +50,7 @@ func TestTTLExpiry(t *testing.T) {
 }
 
 func TestLen(t *testing.T) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 
 	s.Set("a", []byte("1"))
@@ -64,7 +64,7 @@ func TestLen(t *testing.T) {
 }
 
 func TestStats(t *testing.T) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 
 	s.Set("k", []byte("v"))
@@ -79,7 +79,7 @@ func TestStats(t *testing.T) {
 }
 
 func TestConcurrentAccess(t *testing.T) {
-	s := gobase.New(gobase.WithReaperInterval(0))
+	s := store.New(store.WithReaperInterval(0))
 	defer s.Close()
 
 	var wg sync.WaitGroup
@@ -97,5 +97,5 @@ func TestConcurrentAccess(t *testing.T) {
 }
 
 func TestStorageInterface(t *testing.T) {
-	var _ gobase.Storage = gobase.New(gobase.WithReaperInterval(0))
+	var _ store.Storage = store.New(store.WithReaperInterval(0))
 }
