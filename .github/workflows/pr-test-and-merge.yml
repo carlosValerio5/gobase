@@ -34,10 +34,14 @@ jobs:
     needs: test-changed-packages
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Merge pull request and delete branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr merge "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
             --merge \
             --delete-branch
